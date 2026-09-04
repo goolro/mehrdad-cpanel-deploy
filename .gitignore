@@ -1,0 +1,4 @@
+custom.db
+*.db
+*.part.*
+SHA256SUMS

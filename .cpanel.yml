@@ -1,0 +1,9 @@
+---
+deployment_config:
+  shell: /bin/bash
+  backup-public-content: false
+cpanel:
+  hooks:
+    - type: post
+      stage: deploy
+      script: deploy.sh
