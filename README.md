@@ -16,21 +16,28 @@
    → اسکریپت `deploy.sh` خودکار اجرا می‌شود:
    - آرتیفکت را بازچینی و checksum می‌گیرد
    - در `~/mehrdad-app` استخراج می‌کند
-   - `data/production.db` را **فقط بار اول** می‌سازد
+   - دیتابیس روی **Turso ابری** است — فایلی لازم نیست (هاست خالی مشکلی ندارد)
 3. cPanel → **Setup Node.js App** → Create Application:
    | فیلد | مقدار |
    |---|---|
-   | Node.js version | 20.20.2 |
+   | Node.js version | 20.20.2 (یا نزدیک‌ترین 20.x/22.x موجود) |
    | Application mode | Production |
    | Application root | `mehrdad-app` |
-   | Application URL | آدرس staging (مثلاً ساب‌دامین موقت) |
+   | Application URL | mehrdad.ir (یا اول ساب‌دامین staging) |
    | Startup file | `server.js` |
-4. Environment Variables (همان صفحه):
-   - `DATABASE_URL` = `file:/home/motorpum/mehrdad-app/data/production.db`
-   - `ADMIN_PASSWORD` = یک رمز بلند تصادفی
-   - `NODE_ENV` = `production`
-   - `HOSTNAME` = `0.0.0.0`
-5. **Restart** → آدرس Application URL را باز کنید → `/api/posts` باید JSON بدهد.
+4. Environment Variables — همان صفحه، ۶ بار **Add Variable**:
+
+   | Name | Value |
+   |---|---|
+   | `TURSO_DATABASE_URL` | `libsql://mehrdad-goolro.aws-ap-south-1.turso.io` |
+   | `TURSO_AUTH_TOKEN` | توکن Turso (از هاست قبلی کپی، یا `turso db tokens create mehrdad`) |
+   | `ADMIN_PASSWORD` | همان رمز بلند ادمین |
+   | `SITE_ORIGIN` | `https://mehrdad.ir` |
+   | `NODE_ENV` | `production` |
+   | `HOSTNAME` | `0.0.0.0` |
+
+   در حالت Turso نیازی به `DATABASE_URL` نیست. بعد از ذخیره → **Restart**.
+5. تست: `/api/posts` باید JSON بدهد (۸۲ پست).
 
 ## آپدیت‌های بعدی
 
