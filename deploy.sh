@@ -3,7 +3,7 @@
 # mehrdad.ir — cPanel deploy (runs on the HOST, invoked by .cpanel.yml hook
 # or manually — no SSH needed).
 #
-# v2 (2026-09-04): artifact mehrdad-deploy-20260904-183256.tar.gz ships BOTH
+# v3 (2026-09-05): artifact mehrdad-deploy-20260905-222550.tar.gz (main@bd947c7) ships BOTH
 # Prisma engines (host runtime resolved to debian-openssl-1.0.x — see diag).
 #
 # Reassembles the artifact from git chunks, verifies SHA256, extracts into
