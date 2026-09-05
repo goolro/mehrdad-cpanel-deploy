@@ -5,6 +5,9 @@
 #
 # v3 (2026-09-05): artifact mehrdad-deploy-20260905-222550.tar.gz (main@bd947c7) ships BOTH
 # Prisma engines (host runtime resolved to debian-openssl-1.0.x — see diag).
+# v3.2 (2026-09-06): DB step is fresh-host tolerant — public repo ships NO custom.db
+# (removed for privacy), so a first deploy on an empty host prints a NOTE instead of
+# failing; Turso cloud DB (TURSO_* env) needs no file at all.
 #
 # Reassembles the artifact from git chunks, verifies SHA256, extracts into
 # ~/mehrdad-app and seeds data/production.db ONCE (never overwrites prod data).
@@ -29,10 +32,17 @@ echo "    server.js OK · Prisma engines: $(ls "$APP"/node_modules/.prisma/clien
 echo "==> [3/4] production DB (create-once policy)"
 if [ -f "$APP/data/production.db" ]; then
   echo "    data/production.db exists — LEFT UNTOUCHED ✓"
-else
+elif [ -f custom.db ]; then
   mkdir -p "$APP/data"
   cp custom.db "$APP/data/production.db"
   echo "    seeded data/production.db ✓"
+else
+  mkdir -p "$APP/data"
+  echo "    NOTE: no data/production.db on host and no custom.db in this public repo"
+  echo "    (removed from the repo for privacy). This is FINE when the app uses"
+  echo "    TURSO_DATABASE_URL + TURSO_AUTH_TOKEN (DB lives in Turso cloud)."
+  echo "    Otherwise upload a DB file to $APP/data/production.db via File Manager"
+  echo "    before Restart."
 fi
 
 echo "==> [4/4] passenger restart hint + cleanup"
@@ -41,4 +51,5 @@ rm -f "$TARBALL"
 du -sh "$APP"
 echo ""
 echo "DONE. Remaining steps are cPanel UI only — see README.md in this repo."
-echo "  DATABASE_URL=file:$APP/data/production.db"
+echo "  DB mode A (primary): set TURSO_DATABASE_URL + TURSO_AUTH_TOKEN env vars"
+echo "  DB mode B (fallback): DATABASE_URL=file:$APP/data/production.db (needs the file)"
